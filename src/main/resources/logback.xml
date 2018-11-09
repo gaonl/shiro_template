@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="sysLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./logs/task/sys.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>948MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="errorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- 按天滚动文件，如果一个小时内达到300M也会滚动文件, 滚动文件将会压缩成zip格式 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./logs/task/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>948MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <!-- 独立的pattern -->
+        <encoder>
+            <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--
+    <logger name="com.cnc.livect" level="DEBUG" additivity="true">
+        <appender-ref ref="sysLog" />
+    </logger>
+     -->
+    <!--
+    <logger name="io.netty" level="DEBUG" addtivity="true">
+        <appender-ref ref="nettyLog" />
+    </logger>
+    <logger name="org.apache.thrift" level="DEBUG" addtivity="true">
+        <appender-ref ref="thriftLog" />
+    </logger>
+    <logger name="com.alibaba.rocketmq" level="DEBUG" additivity="true">
+        <appender-ref ref="mqLog" />
+    </logger>
+    -->
+
+    <!-- cxf inbound/outbound logger -->
+    <!-- <logger name="org.apache.cxf.services" level="INFO" /> -->
+
+    <!-- root -->
+    <appender name ="sysLogASYNC" class= "ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold >0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref ="sysLog"/>
+    </appender>
+    <appender name ="errorLogASYNC" class= "ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold >0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref ="errorLog"/>
+    </appender>
+    <appender name ="consoleASYNC" class= "ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold >0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref ="console"/>
+    </appender>
+    <!-- MyBatis 执行Sql打印 -->
+    <!--<logger name="com.cnc.livect.pfview.dao" level="debug" additivity="false">-->
+        <!--<appender-ref ref="consoleASYNC" />-->
+    <!--</logger>-->
+    <root level="INFO">
+        <appender-ref ref="consoleASYNC" />
+        <appender-ref ref="sysLogASYNC" />
+        <appender-ref ref="errorLogASYNC" />
+    </root>
+</configuration>

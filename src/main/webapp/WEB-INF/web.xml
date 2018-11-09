@@ -2,24 +2,79 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
 
+    <!-- 以下shiro配置，不整合spring -->
+    <!--<filter>-->
+    <!--<filter-name>shiroFilter</filter-name>-->
+    <!--<filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+    <!--<filter-name>shiroFilter</filter-name>-->
+    <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
+
+    <!--<listener>-->
+    <!--<listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>-->
+    <!--</listener>-->
+    <!--<context-param>-->
+    <!--<param-name>shiroEnvironmentClass</param-name>-->
+    <!--<param-value>org.apache.shiro.web.env.IniWebEnvironment</param-value>-->
+    <!--</context-param>-->
+    <!--<context-param>-->
+    <!--<param-name>shiroConfigLocations</param-name>-->
+    <!--<param-value>classpath:shiro.ini</param-value>-->
+    <!--</context-param>-->
+
+
+
+    <filter>
+        <filter-name>SpringCharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>SpringCharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- 以下shiroFilter过滤器配置，此Filter会将过滤调用转发给spring中bean名称为shiroFilter的bean，整合spring -->
     <filter>
         <filter-name>shiroFilter</filter-name>
-        <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
     </filter>
     <filter-mapping>
         <filter-name>shiroFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+
+    <!-- shiro中的组件要成为父容器的bean，不然找不到 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:application-context.xml,classpath:application-shiro.xml</param-value>
+    </context-param>
     <listener>
-        <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
-    <context-param>
-        <param-name>shiroEnvironmentClass</param-name>
-        <param-value>org.apache.shiro.web.env.IniWebEnvironment</param-value>
-    </context-param>
-    <context-param>
-        <param-name>shiroConfigLocations</param-name>
-        <param-value>classpath:shiro.ini</param-value>
-    </context-param>
+    <servlet>
+        <servlet-name>applicationMVC</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:application-mvc.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>applicationMVC</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+
 </web-app>
