@@ -26,7 +26,9 @@ public class RedisSessionDao extends EnterpriseCacheSessionDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            jedis.close();
+            if (jedis != null) {
+                jedis.close();
+            }
         }
 
         return sessionId;
@@ -44,13 +46,16 @@ public class RedisSessionDao extends EnterpriseCacheSessionDAO {
             }
             Session session = (Session) SerializableUtils.deserialize(data);
 
+            //将获取到的session缓存起来，不知道为啥CachingSessionDao为啥没有实现
             cache(session, sessionId);
 
             return session;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            jedis.close();
+            if (jedis != null) {
+                jedis.close();
+            }
         }
         return null;
     }
@@ -72,7 +77,9 @@ public class RedisSessionDao extends EnterpriseCacheSessionDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            jedis.close();
+            if (jedis != null) {
+                jedis.close();
+            }
         }
     }
 
@@ -87,7 +94,9 @@ public class RedisSessionDao extends EnterpriseCacheSessionDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            jedis.close();
+            if (jedis != null) {
+                jedis.close();
+            }
         }
     }
 

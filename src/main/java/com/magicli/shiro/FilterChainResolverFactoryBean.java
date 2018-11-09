@@ -16,7 +16,7 @@ public class FilterChainResolverFactoryBean implements FactoryBean<FilterChainRe
     public FilterChainResolver getObject() throws Exception {
 
         Factory<FilterChainResolver> factory =
-                new IniFilterChainResolverFactory(Ini.fromResourcePath("classpath:shiro.ini"));
+                new IniFilterChainResolverFactory(Ini.fromResourcePath("classpath:shiro-cas.ini"));
 
         FilterChainResolver filterChainResolver = factory.getInstance();
 

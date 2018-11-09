@@ -12,7 +12,7 @@ public class WebIniSecurityManagerFactoryBean implements FactoryBean<org.apache.
     @Override
     public org.apache.shiro.web.mgt.DefaultWebSecurityManager getObject() throws Exception {
         Factory<org.apache.shiro.mgt.SecurityManager> factory =
-                new WebIniSecurityManagerFactory(Ini.fromResourcePath("classpath:shiro.ini"));
+                new WebIniSecurityManagerFactory(Ini.fromResourcePath("classpath:shiro-cas.ini"));
 
         org.apache.shiro.web.mgt.DefaultWebSecurityManager defaultWebSecurityManager = (org.apache.shiro.web.mgt.DefaultWebSecurityManager)factory.getInstance();
 
