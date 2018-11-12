@@ -9,6 +9,10 @@
     <bean id="webSecurityManager" class="com.magicli.shiro.WebIniSecurityManagerFactoryBean"/>
     <bean id="filterChainResolver" class="com.magicli.shiro.FilterChainResolverFactoryBean"/>
 
+    <!-- 此处配置在容器关闭是，会销毁pring容器，进而调用这个bean的destroy方法 -->
+    <bean id="shiroSecurityManagerDestoryBean" class="com.magicli.shiro.ShiroSecurityManagerDestoryBean"
+          destroy-method="destroy"/>
+
     <!-- 配置shiroFilter -->
     <bean id="shiroFilter" class="com.magicli.shiro.MyShiroFilterFactoryBean">
         <property name="webSecurityManager" ref="webSecurityManager"/>
