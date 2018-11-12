@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+    <!-- 如果想让spring生命周期管理，还是要用常规的bean配置来管理，用继承FactoryBean并实现getObject()方法得到的bean是不归生命周期管的 -->
+    <!-- PostProcessor啊，postProcessBeforeDestruction对用FactoryBean配置的不管用 -->
 
-    <!-- 配置Shiro的 WebSecurityManager -->
-    <bean id="webSecurityManager" class="com.magicli.shiro.WebIniSecurityManagerFactoryBean"/>
-    <bean id="filterChainResolver" class="com.magicli.shiro.FilterChainResolverFactoryBean"/>
-
-    <!-- 此处配置在容器关闭是，会销毁pring容器，进而调用这个bean的destroy方法 -->
-    <bean id="shiroSecurityManagerDestoryBean" class="com.magicli.shiro.ShiroSecurityManagerDestoryBean"
-          destroy-method="destroy"/>
+    <!-- 此处配置在容器关闭是，会销毁pring容器，进而调用这个bean的postProcessBeforeDestruction方法 -->
+    <!-- 此处为啥要自己实现这个processor而不用shiro的LifecycleBeanPostProcessor呢 -->
+    <!-- 因为我这边spring的版本是4.x的，而shiro的LifecycleBeanPostProcessor并没有实现requiresDestruction这个方法 -->
+    <!-- requiresDestruction这个方法是在（@since 4.3）后面加进来的 -->
+    <bean id="lifecycleBeanPostProcessor"
+          class="com.magicli.shiro.MyLifecycleBeanPostProcessor"/>
 
     <!-- 配置shiroFilter -->
-    <bean id="shiroFilter" class="com.magicli.shiro.MyShiroFilterFactoryBean">
-        <property name="webSecurityManager" ref="webSecurityManager"/>
-        <property name="filterChainResolver" ref="filterChainResolver"/>
+    <bean id="shiroFilter" class="com.magicli.shiro.factory.ShiroComponentFromFactoryMethod"
+          factory-method="getShiroFilter">
     </bean>
 
 
