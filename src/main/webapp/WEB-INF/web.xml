@@ -54,7 +54,7 @@
     </filter-mapping>
 
 
-    <!-- shiro中的组件要成为父容器的bean，不然找不到 -->
+    <!-- shiro中的组件要成为父容器的bean，不然找不到！所以application-shiro.xml要配置在这，不能在application-mvc.xml那里配置 -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath:application-context.xml,classpath:application-shiro.xml</param-value>

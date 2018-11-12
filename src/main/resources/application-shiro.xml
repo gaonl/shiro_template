@@ -9,6 +9,7 @@
     <bean id="webSecurityManager" class="com.magicli.shiro.WebIniSecurityManagerFactoryBean"/>
     <bean id="filterChainResolver" class="com.magicli.shiro.FilterChainResolverFactoryBean"/>
 
+    <!-- 配置shiroFilter -->
     <bean id="shiroFilter" class="com.magicli.shiro.MyShiroFilterFactoryBean">
         <property name="webSecurityManager" ref="webSecurityManager"/>
         <property name="filterChainResolver" ref="filterChainResolver"/>
